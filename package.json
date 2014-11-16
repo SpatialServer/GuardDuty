@@ -1,0 +1,33 @@
+{
+  "name": "GuardDuty",
+  "version": "0.0.1",
+  "description": "An automated website health checker using PhantomJS, CasperJS and SpookyJS. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpatialServer/GuardDuty.git"
+  },
+  "keywords": [
+    "PhantomJS",
+    "Testing",
+    "SpookyJS",
+    "Headless",
+    "Webkit",
+    "CasperJS"
+  ],
+  "author": "Ryan Whitley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SpatialServer/GuardDuty/issues"
+  },
+  "homepage": "https://github.com/SpatialServer/GuardDuty",
+  "dependencies": {
+    "flow": "^0.2.3",
+    "fs": "0.0.2",
+    "path": "^0.4.9",
+    "spooky": "^0.2.5"
+  }
+}

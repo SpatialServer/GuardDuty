@@ -6,12 +6,19 @@ try {
   Spooky = require('../lib/spooky');
 }
 
-
-
-
 var Page = function(){
 
+}
+
+
+Page.prototype.run = function(cb){
+
   this.stats = {}; //Public statistics property
+  this.cb = cb;
+  this.startTime;
+  this.loadTime;
+
+  var self = this;
 
   var spooky = new Spooky({
     child: {
@@ -35,6 +42,21 @@ var Page = function(){
         return document.title;
       }));
     });
+
+    spooky.then(function () {
+      this.evaluate(function () {
+        //Calling function in page context
+        slideToContent();
+      })
+    });
+
+    spooky.then(function () {
+      this.wait(5000, function() {
+        this.capture('./irrasmaps.png');
+      })
+    });
+
+    self.startTime = Date.now();
     spooky.run();
   });
 
@@ -56,8 +78,10 @@ var Page = function(){
    */
 
   spooky.on('hello', function (greeting) {
-    this.stats.title = greeting;
+    self.stats.loadTime = (Date.now() - self.startTime) / 1000; //seconds
     console.log(greeting);
+    console.log("Loaded in " + self.stats.loadTime + "ms")
+    self.cb();
   });
 
   spooky.on('log', function (log) {
