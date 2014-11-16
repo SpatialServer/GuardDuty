@@ -35,14 +35,17 @@ Page.prototype.run = function(cb){
       throw e;
     }
 
+    //Which URL to open
     spooky.start('http://maps.irras.in');
 
+    //Load up Casper with instructions once the page loads
     spooky.then(function () {
-      this.emit('hello', 'Hello, from ' + this.evaluate(function () {
+      this.emit('loaded', 'Hello, from ' + this.evaluate(function () {
         return document.title;
       }));
     });
 
+    //When the first 'then' block is done, this one is next
     spooky.then(function () {
       this.evaluate(function () {
         //Calling function in page context
@@ -50,14 +53,19 @@ Page.prototype.run = function(cb){
       })
     });
 
+    //When the previous 'then' block is done, this one is next
     spooky.then(function () {
       this.wait(5000, function() {
-        this.capture('./irrasmaps.png');
+        this.capture('./outputimages/irrasmaps.png');
       })
     });
 
+    spooky.then(function(){
+      this.emit('finished', 'finished'); //let us know we're done.  //This should always be the last spooky.then
+    });
+
     self.startTime = Date.now();
-    spooky.run();
+    spooky.run(); //Kick of the loading.
   });
 
   spooky.on('error', function (e, stack) {
@@ -68,26 +76,30 @@ Page.prototype.run = function(cb){
     }
   });
 
-  /*
-   // Uncomment this block to see all of the things Casper has to say.
-   // There are a lot.
-   // He has opinions.
-   spooky.on('console', function (line) {
-   console.log(line);
-   });
-   */
 
-  spooky.on('hello', function (greeting) {
+  // Uncomment this block to see all of the things Casper has to say.
+  // There are a lot.
+  // He has opinions.
+  //spooky.on('console', function (line) {
+  //console.log(line);
+  //});
+
+
+  spooky.on('loaded', function (greeting) {
     self.stats.loadTime = (Date.now() - self.startTime) / 1000; //seconds
+    self.stats.greeting = greeting;
     console.log(greeting);
     console.log("Loaded in " + self.stats.loadTime + "ms")
-    self.cb();
   });
 
   spooky.on('log', function (log) {
     if (log.space === 'remote') {
       console.log(log.message.replace(/ \- .*/, ''));
     }
+  });
+
+  spooky.on('finished', function (imgPath) {
+    self.cb();
   });
 
 }

@@ -19,7 +19,14 @@ var path = require("path"),
           try {
             var operation = require(__dirname + "/" + file);
             var page = new operation();
-            if (page && page.run) page.run(this);
+            var self = this;
+            if (page && page.run) page.run(function(){
+              //Finished running.
+              //Grab the results object, then continue.
+              var stats = page.getStats();
+
+              self(); //continue on
+            });
           }
           catch (e) {
             console.log("Error loading page " + e)

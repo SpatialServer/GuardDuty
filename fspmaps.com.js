@@ -39,13 +39,17 @@ Page.prototype.run = function(cb) {
     spooky.start('http://www.fspmaps.com/india');
 
     spooky.then(function () {
-      this.emit('hello', 'Hello, from ' + this.evaluate(function () {
+      this.emit('loaded', 'Hello, from ' + this.evaluate(function () {
         return document.title;
       }));
     });
 
     spooky.then(function () {
-        this.capture('./fspmapsindia.png');
+       this.capture('./outputimages/fspmapsindia.png');
+    });
+
+    spooky.then(function(){
+      this.emit('finished', 'finished'); //let us know we're done.  //This should always be the last spooky.then
     });
 
     self.startTime = Date.now();
@@ -69,10 +73,18 @@ Page.prototype.run = function(cb) {
    });
    */
 
-  spooky.on('hello', function (greeting) {
+  spooky.on('loaded', function (greeting) {
     self.stats.loadTime = (Date.now() - self.startTime) / 1000; //seconds
+    self.stats.greeting = greeting;
     console.log(greeting);
     console.log("Loaded in " + self.stats.loadTime + "ms")
+  });
+
+  spooky.on('imageLoaded', function (imgPath) {
+    self.stats.imgPath = imgPath;
+  });
+
+  spooky.on('finished', function (imgPath) {
     self.cb();
   });
 
