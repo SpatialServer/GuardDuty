@@ -1,4 +1,4 @@
 GuardDuty
 =========
 
-Automated web application health checker using CasperJS &amp; PhantomJS
+Automated web application health checker using SpookyJS, CasperJS &amp; PhantomJS
